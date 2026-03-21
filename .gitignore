@@ -47,19 +47,7 @@ gradle-app.setting
 
 ### JetBrains/IntelliJ IDEA ###
 # IntelliJ project files
-.idea/workspace.xml
-.idea/tasks.xml
-.idea/dictionaries
-.idea/shelf
-.idea/sqlDataSources.xml
-.idea/dataSources.local.xml
-.idea/dynamic.xml
-.idea/snippetTemplates.xml
-.idea/headerFooterTemplates.xml
-.idea/scopes/
-# User-specific stuff
-.idea/usr_profiles/
-.idea/contentModel.xml
+.idea/
 
 # CMake
 cmake-build-*/

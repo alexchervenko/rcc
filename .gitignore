@@ -19,3 +19,59 @@ gradle-app.setting
 .project
 # JDT-specific (Eclipse Java Development Tools)
 .classpath
+
+# Created by https://www.gitignore.io
+
+### General Java ###
+*.class
+# BlueJ files
+*.ctxt
+# Mobile Tools for Java (J2ME)
+.mtj.tmp/
+# Package Files
+*.jar
+*.war
+*.ear
+# Virtual machine crash logs, see https://www.java.com
+hs_err_pid*
+
+### Gradle ###
+.gradle
+/build/
+# Ignore Gradle GUI config
+gradle-app.setting
+# Avoid ignoring Gradle wrapper jar file (.jar files are usually ignored)
+!gradle-wrapper.jar
+# Cache of project
+.gradletasknamecache
+
+### JetBrains/IntelliJ IDEA ###
+# IntelliJ project files
+.idea/workspace.xml
+.idea/tasks.xml
+.idea/dictionaries
+.idea/shelf
+.idea/sqlDataSources.xml
+.idea/dataSources.local.xml
+.idea/dynamic.xml
+.idea/snippetTemplates.xml
+.idea/headerFooterTemplates.xml
+.idea/scopes/
+# User-specific stuff
+.idea/usr_profiles/
+.idea/contentModel.xml
+
+# CMake
+cmake-build-*/
+# File-based WS settings
+*.iws
+# Project file
+*.ipr
+# Compilation output
+/out/
+
+### Optional/Advanced Exclusions ###
+# Multi-module builds might also need to ignore build directories within subprojects
+# Uncomment the following line if applicable:
+# /*/build/
+

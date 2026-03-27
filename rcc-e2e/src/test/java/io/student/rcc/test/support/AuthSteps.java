@@ -7,11 +7,14 @@ import io.student.rcc.page.RegisterPage;
 
 import static com.codeborne.selenide.Selenide.$x;
 
+import io.qameta.allure.Step;
+
 public final class AuthSteps {
 
   private AuthSteps() {
   }
 
+  @Step("Зарегистрировать и залогинить нового пустого пользователя")
   public static ProfilePage registerAndLoginEmptyUser() {
     TestUser user = new TestUser("user" + System.currentTimeMillis(), "123456");
 

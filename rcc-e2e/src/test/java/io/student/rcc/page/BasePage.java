@@ -6,10 +6,12 @@ import static com.codeborne.selenide.Selenide.$x;
 import com.codeborne.selenide.CollectionCondition;
 import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.ElementsCollection;
+import io.qameta.allure.Step;
 import io.student.rcc.page.component.Header;
 import io.student.rcc.page.component.ItemCard;
 import io.student.rcc.page.component.SearchField;
 import java.util.List;
+import lombok.NonNull;
 
 public abstract class BasePage {
 
@@ -17,32 +19,38 @@ public abstract class BasePage {
 
   protected final Header header = new Header();
 
-  protected BasePage(String path) {
+  protected BasePage(@NonNull String path) {
     this.path = path;
   }
 
+  @Step("Получить хедер")
   public Header header() {
     return header;
   }
 
+  @Step("Получить поле поиска")
   public SearchField search() {
     return new SearchField($x("//div[input[@type='search']]"));
   }
 
+  @Step("Открыть страницу")
   public BasePage open() {
     com.codeborne.selenide.Selenide.open(path);
     return waitForOpen();
   }
 
+  @Step("Дождаться открытия страницы")
   public BasePage waitForOpen() {
     $x("//h2").shouldBe(Condition.visible);
     return this;
   }
 
+  @Step("Получить заголовок страницы")
   public String title() {
     return $x("//h2").shouldBe(Condition.visible).getText();
   }
 
+  @Step("Получить карточки на странице")
   public List<ItemCard> cards() {
     ElementsCollection cards = $$("ul.grid > li").shouldBe(CollectionCondition.sizeGreaterThan(0));
     return cards.asFixedIterable().stream().map(ItemCard::new).toList();

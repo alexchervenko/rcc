@@ -63,3 +63,6 @@ cmake-build-*/
 # Uncomment the following line if applicable:
 # /*/build/
 
+/amplicode.xml
+/rcc-client/.svelte-kit/
+/rcc-client/node_modules/

@@ -1,0 +1,22 @@
+package io.student.rcc.page;
+
+import static com.codeborne.selenide.Selenide.$x;
+
+import com.codeborne.selenide.Condition;
+
+public class ProfilePage extends BasePage {
+
+  public ProfilePage() {
+    super("/");
+  }
+
+  @Override
+  public ProfilePage waitForOpen() {
+    $x("//nav[@aria-label='Основная навигация']").shouldBe(Condition.visible);
+    return this;
+  }
+
+  public void openProfileModal() {
+    $x("//header//button[contains(@class, 'btn-icon')]").shouldBe(Condition.visible).click();
+  }
+}

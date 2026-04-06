@@ -6,10 +6,11 @@ import io.student.rcc.page.component.MuseumFormModal;
 import io.student.rcc.page.component.ProfileFormModal;
 import io.student.rcc.test.BaseWebTest;
 import io.student.rcc.test.support.AuthSteps;
-import java.io.File;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+
+import java.io.File;
 
 @Tag("web")
 public class MuseumAndProfileWebTest extends BaseWebTest {

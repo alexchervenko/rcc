@@ -1,11 +1,11 @@
 package io.student.rcc.page;
 
-import static com.codeborne.selenide.Selenide.$;
-
 import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.SelenideElement;
 import io.qameta.allure.Step;
 import lombok.NonNull;
+
+import static com.codeborne.selenide.Selenide.$;
 
 public class LoginPage {
 

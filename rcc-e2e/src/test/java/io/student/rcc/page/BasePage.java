@@ -1,8 +1,5 @@
 package io.student.rcc.page;
 
-import static com.codeborne.selenide.Selenide.$$;
-import static com.codeborne.selenide.Selenide.$x;
-
 import com.codeborne.selenide.CollectionCondition;
 import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.ElementsCollection;
@@ -10,8 +7,12 @@ import io.qameta.allure.Step;
 import io.student.rcc.page.component.Header;
 import io.student.rcc.page.component.ItemCard;
 import io.student.rcc.page.component.SearchField;
-import java.util.List;
 import lombok.NonNull;
+
+import java.util.List;
+
+import static com.codeborne.selenide.Selenide.$;
+import static com.codeborne.selenide.Selenide.$$;
 
 public abstract class BasePage {
 
@@ -30,7 +31,7 @@ public abstract class BasePage {
 
   @Step("Получить поле поиска")
   public SearchField search() {
-    return new SearchField($x("//div[input[@type='search']]"));
+    return new SearchField($("div:has(input[type='search'])"));
   }
 
   @Step("Открыть страницу")
@@ -41,13 +42,13 @@ public abstract class BasePage {
 
   @Step("Дождаться открытия страницы")
   public BasePage waitForOpen() {
-    $x("//h2").shouldBe(Condition.visible);
+    $("h2").shouldBe(Condition.visible);
     return this;
   }
 
   @Step("Получить заголовок страницы")
   public String title() {
-    return $x("//h2").shouldBe(Condition.visible).getText();
+    return $("h2").shouldBe(Condition.visible).getText();
   }
 
   @Step("Получить карточки на странице")

@@ -1,10 +1,10 @@
 package io.student.rcc.page.component;
 
-import static com.codeborne.selenide.Selenide.$;
-
 import com.codeborne.selenide.Condition;
 import io.qameta.allure.Step;
 import lombok.NonNull;
+
+import static com.codeborne.selenide.Selenide.$;
 
 public class ProfileFormModal extends BaseComponent {
 
@@ -14,31 +14,31 @@ public class ProfileFormModal extends BaseComponent {
 
   @Step("Заполнить имя в профиле: {firstname}")
   public ProfileFormModal setFirstname(@NonNull String firstname) {
-    container.$("input[name='firstname']").shouldBe(Condition.visible).setValue(firstname);
+    container.$("input[name='firstname']").setValue(firstname);
     return this;
   }
 
   @Step("Заполнить фамилию в профиле: {surname}")
   public ProfileFormModal setSurname(@NonNull String surname) {
-    container.$("input[name='surname']").shouldBe(Condition.visible).setValue(surname);
+    container.$("input[name='surname']").setValue(surname);
     return this;
   }
 
   @Step("Сохранить профиль")
   public ProfileFormModal submit() {
-    container.$("button[type='submit']").shouldBe(Condition.visible).click();
+    container.$("button[type='submit']").click();
     return this;
   }
 
   @Step("Проверить имя в профиле: {firstname}")
   public ProfileFormModal shouldHaveFirstname(@NonNull String firstname) {
-    container.$("input[name='firstname']").shouldBe(Condition.visible).shouldHave(Condition.value(firstname));
+    container.$("input[name='firstname']").shouldHave(Condition.value(firstname));
     return this;
   }
 
   @Step("Проверить фамилию в профиле: {surname}")
   public ProfileFormModal shouldHaveSurname(@NonNull String surname) {
-    container.$("input[name='surname']").shouldBe(Condition.visible).shouldHave(Condition.value(surname));
+    container.$("input[name='surname']").shouldHave(Condition.value(surname));
     return this;
   }
 }

@@ -1,13 +1,12 @@
 package io.student.rcc.test.support;
 
 import com.codeborne.selenide.Condition;
+import io.qameta.allure.Step;
 import io.student.rcc.page.LoginPage;
 import io.student.rcc.page.ProfilePage;
 import io.student.rcc.page.RegisterPage;
 
-import static com.codeborne.selenide.Selenide.$x;
-
-import io.qameta.allure.Step;
+import static com.codeborne.selenide.Selenide.$;
 
 public final class AuthSteps {
 
@@ -22,8 +21,7 @@ public final class AuthSteps {
         .open()
         .register(user.username(), user.password(), user.password());
 
-    $x("//a[contains(normalize-space(.), 'Войти')]|//a[contains(normalize-space(.), 'Войти в систему')]")
-        .shouldBe(Condition.visible);
+    $("a:contains('Войти'), a:contains('Войти в систему')").shouldBe(Condition.visible);
 
     ProfilePage profilePage = new ProfilePage().open();
     profilePage.header().clickLogin();

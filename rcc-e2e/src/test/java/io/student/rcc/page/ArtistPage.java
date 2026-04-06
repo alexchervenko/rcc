@@ -14,7 +14,7 @@ public class ArtistPage extends BasePage {
   @Step("Дождаться открытия страницы художников")
   @Override
   public ArtistPage waitForOpen() {
-    $("h2:contains('Художники')").shouldBe(Condition.visible);
+    $("h2").shouldHave(Condition.text("Художники"));
     return this;
   }
 }

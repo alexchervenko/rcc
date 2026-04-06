@@ -30,7 +30,7 @@ public class RegisterPage {
 
   @Step("Зарегистрировать пользователя: {username}")
   public RegisterPage register(@NonNull String username, @NonNull String password, @NonNull String passwordSubmit) {
-    usernameInput.shouldBe(Condition.visible).setValue(username);
+    usernameInput.setValue(username);
     passwordInput.setValue(password);
     passwordSubmitInput.setValue(passwordSubmit);
     submitButton.click();

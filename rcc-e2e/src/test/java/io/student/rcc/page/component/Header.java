@@ -1,5 +1,6 @@
 package io.student.rcc.page.component;
 
+import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.SelenideElement;
 import io.qameta.allure.Step;
 import io.student.rcc.page.ArtistPage;
@@ -13,7 +14,7 @@ public class Header extends BaseComponent {
     private final SelenideElement paintingsLink = container.$("a[href='/painting']");
     private final SelenideElement artistsLink = container.$("a[href='/artist']");
     private final SelenideElement museumsLink = container.$("a[href='/museum']");
-    private final SelenideElement loginButton = container.$("button:contains('Войти')");
+  private final SelenideElement loginButton = container.$$("button").findBy(Condition.text("Войти"));
     private final SelenideElement profileButton = container.$("button[class*='btn-icon']");
 
     public Header() {

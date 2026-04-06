@@ -48,7 +48,7 @@ public abstract class BasePage {
 
   @Step("Получить заголовок страницы")
   public String title() {
-    return $("h2").shouldBe(Condition.visible).getText();
+    return $("h2").getText();
   }
 
   @Step("Получить карточки на странице")

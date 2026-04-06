@@ -21,7 +21,7 @@ public class LoginPage {
 
   @Step("Войти пользователем: {username}")
   public ProfilePage login(@NonNull String username, @NonNull String password) {
-    usernameInput.shouldBe(Condition.visible).setValue(username);
+    usernameInput.setValue(username);
     passwordInput.setValue(password);
     submitButton.click();
     return new ProfilePage().waitForOpen();

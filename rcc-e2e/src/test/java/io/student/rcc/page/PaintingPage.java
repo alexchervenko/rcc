@@ -14,7 +14,7 @@ public class PaintingPage extends BasePage {
   @Step("Дождаться открытия страницы картин")
   @Override
   public PaintingPage waitForOpen() {
-    $("h2:contains('Картины')").shouldBe(Condition.visible);
+    $("h2").shouldHave(Condition.text("Картины"));
     return this;
   }
 }

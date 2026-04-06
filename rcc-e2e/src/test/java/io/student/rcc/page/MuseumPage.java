@@ -6,6 +6,8 @@ import io.student.rcc.page.component.MuseumFormModal;
 import lombok.NonNull;
 
 import static com.codeborne.selenide.Selenide.$;
+import static com.codeborne.selenide.Selenide.$$;
+import static com.codeborne.selenide.Selenide.$x;
 
 public class MuseumPage extends BasePage {
 
@@ -16,13 +18,13 @@ public class MuseumPage extends BasePage {
   @Step("Дождаться открытия страницы музеев")
   @Override
   public MuseumPage waitForOpen() {
-    $("h2:contains('Музеи')").shouldBe(Condition.visible);
+    $("h2").shouldHave(Condition.text("Музеи"));
     return this;
   }
 
   @Step("Нажать кнопку добавления музея")
   public MuseumPage clickAddMuseum() {
-    $("button:contains('Добавить музей')").click();
+    $$("button").findBy(Condition.text("Добавить музей")).click();
     return this;
   }
 
@@ -35,13 +37,13 @@ public class MuseumPage extends BasePage {
 
   @Step("Открыть музей по названию: {title}")
   public MuseumPage openMuseumByTitle(@NonNull String title) {
-    $("ul[class*='grid'] a:has(div:contains('" + title + "'))").click();
+    $$("ul[class*='grid'] a").findBy(Condition.text(title)).click();
     return this;
   }
 
   @Step("Проверить отображение названия музея: {title}")
   public MuseumPage shouldShowMuseumTitle(@NonNull String title) {
-    $("header[class*='card-header']:contains('" + title + "')").shouldBe(Condition.visible);
+    $$("header[class*='card-header']").findBy(Condition.text(title)).shouldBe(Condition.visible);
     return this;
   }
 

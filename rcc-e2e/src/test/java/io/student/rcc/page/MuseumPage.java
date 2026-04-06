@@ -7,7 +7,6 @@ import lombok.NonNull;
 
 import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.$$;
-import static com.codeborne.selenide.Selenide.$x;
 
 public class MuseumPage extends BasePage {
 

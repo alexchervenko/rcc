@@ -6,7 +6,6 @@ import io.student.rcc.page.LoginPage;
 import io.student.rcc.page.ProfilePage;
 import io.student.rcc.page.RegisterPage;
 
-import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.$$;
 
 public final class AuthSteps {
@@ -22,7 +21,7 @@ public final class AuthSteps {
         .open()
         .register(user.username(), user.password(), user.password());
 
-    $$("a").findBy(Condition.or("text", Condition.text("Войти"), Condition.text("Войти в систему"))).shouldBe(Condition.visible);
+    $$("a").findBy(Condition.text("Войти")).shouldBe(Condition.visible);
 
     ProfilePage profilePage = new ProfilePage().open();
     profilePage.header().clickLogin();

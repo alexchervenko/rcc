@@ -13,7 +13,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
 
-@Service
+// @Service - временно отключено, используем RestCountryClient
+// Этот класс не должен использоваться, страны берутся из geo-сервиса
+@Deprecated
 public class CountryServiceImpl implements CountryService {
   private final CountryRepository countryRepository;
 

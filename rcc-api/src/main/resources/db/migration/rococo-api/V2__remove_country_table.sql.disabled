@@ -1,0 +1,15 @@
+-- Удаляем таблицу country после переноса в отдельный микросервис
+-- Сначала удаляем внешний ключ из таблицы museum
+ALTER TABLE `museum` DROP FOREIGN KEY fk_country_id;
+
+-- Удаляем индекс внешнего ключа если существует
+-- DROP INDEX IF EXISTS fk_country_id ON `museum`;
+
+-- Удаляем колонку country_id из таблицы museum
+ALTER TABLE `museum` DROP COLUMN country_id;
+
+-- Добавляем новую колонку для хранения ID страны из микросервиса
+ALTER TABLE `museum` ADD COLUMN country_external_id VARCHAR(36);
+
+-- Удаляем таблицу country
+DROP TABLE `country`;

@@ -10,6 +10,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Lob;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.proxy.HibernateProxy;
@@ -41,9 +42,8 @@ public class MuseumEntity implements Serializable {
   @Column(columnDefinition = "LONGBLOB")
   private byte[] photo;
 
-  @OneToOne(fetch = FetchType.EAGER)
-  @JoinColumn(name = "country_id", referencedColumnName = "id")
-  private CountryEntity country;
+  @Column(name = "country_external_id", nullable = false, length = 36)
+  private String countryExternalId;
 
   @Override
   public final boolean equals(Object o) {

@@ -1,9 +1,10 @@
 package io.student.rococo.service.impl;
 
-import io.student.rococo.data.entity.CountryEntity;
+import io.student.rococo.config.ServiceLocator;
 import io.student.rococo.data.entity.MuseumEntity;
-import io.student.rococo.data.repository.CountryRepository;
 import io.student.rococo.data.repository.MuseumRepository;
+import io.student.rococo.model.CountryJson;
+import io.student.rococo.service.api.CountryService;
 import io.student.rococo.exception.ResourceNotFoundException;
 import io.student.rococo.model.MuseumJson;
 import io.student.rococo.service.api.MuseumService;
@@ -19,12 +20,12 @@ import java.util.UUID;
 @Service
 public class MuseumServiceImpl implements MuseumService {
   private final MuseumRepository museumRepository;
-  private final CountryRepository countryRepository;
+  private final ServiceLocator serviceLocator;
 
   @Autowired
-  public MuseumServiceImpl(MuseumRepository museumRepository, CountryRepository countryRepository) {
+  public MuseumServiceImpl(MuseumRepository museumRepository, ServiceLocator serviceLocator) {
     this.museumRepository = museumRepository;
-    this.countryRepository = countryRepository;
+    this.serviceLocator = serviceLocator;
   }
 
   @Override
@@ -60,7 +61,10 @@ public class MuseumServiceImpl implements MuseumService {
             museum.photo()
         ).bytes()
     );
-    museumEntity.setCountry(getRequiredCountry(museum.geo().country().id()));
+    // Устанавливаем countryExternalId как строку UUID
+    if (museum.geo().country() != null && museum.geo().country().id() != null) {
+      museumEntity.setCountryExternalId(museum.geo().country().id().toString());
+    }
     return MuseumJson.fromEntity(
         museumRepository.save(museumEntity)
     );
@@ -70,11 +74,11 @@ public class MuseumServiceImpl implements MuseumService {
   @Transactional
   public MuseumJson create(MuseumJson museum) {
     MuseumEntity museumEntity = museum.toEntity();
-    CountryEntity country = museum.geo().country().id() != null
-        ? getRequiredCountry(museum.geo().country().id())
-        : getRequiredCountry(museum.geo().country().name());
-
-    museumEntity.setCountry(country);
+    
+    // Проверяем существование страны через RestCountryClient
+    validateCountryExists(museum.geo().country());
+    
+    // countryExternalId уже установлен в toEntity()
     return MuseumJson.fromEntity(
         museumRepository.save(
             museumEntity
@@ -88,15 +92,26 @@ public class MuseumServiceImpl implements MuseumService {
     );
   }
 
-  private CountryEntity getRequiredCountry(UUID id) {
-    return countryRepository.findById(id).orElseThrow(
-        () -> new ResourceNotFoundException(String.format("Страна не найдена по id: %s", id))
-    );
-  }
-
-  private CountryEntity getRequiredCountry(String name) {
-    return countryRepository.findByName(name).orElseThrow(
-        () -> new ResourceNotFoundException(String.format("Страна не найдена по имени: %s", name))
-    );
+  private void validateCountryExists(CountryJson country) {
+    if (country == null) {
+      throw new ResourceNotFoundException("Страна не указана");
+    }
+    
+    CountryService countryService = serviceLocator.getCountryService();
+    
+    try {
+      if (country.id() != null) {
+        // Проверяем по ID через RestCountryClient
+        countryService.findCountryById(country.id().toString());
+      } else if (country.name() != null) {
+        // Проверяем по имени через RestCountryClient
+        countryService.findCountryByName(country.name());
+      } else {
+        throw new ResourceNotFoundException("Не указаны данные страны (id или name)");
+      }
+    } catch (Exception e) {
+      throw new ResourceNotFoundException("Страна не найдена: " + 
+          (country.id() != null ? country.id().toString() : country.name()));
+    }
   }
 }

@@ -34,6 +34,8 @@ dependencies {
     testImplementation "com.squareup.okhttp3:logging-interceptor:$okhttpVersion"
     testCompileOnly "org.projectlombok:lombok:1.18.42"
     testAnnotationProcessor "org.projectlombok:lombok:1.18.42"
+    
+
 }
 
 allure {

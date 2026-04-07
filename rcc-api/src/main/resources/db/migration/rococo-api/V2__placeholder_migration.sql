@@ -1,0 +1,3 @@
+-- Placeholder migration for version 2
+-- This migration was already applied in the database but the file was lost
+-- This empty migration allows Flyway to validate successfully

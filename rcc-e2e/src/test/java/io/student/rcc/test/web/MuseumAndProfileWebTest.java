@@ -5,7 +5,8 @@ import io.student.rcc.page.ProfilePage;
 import io.student.rcc.page.component.MuseumFormModal;
 import io.student.rcc.page.component.ProfileFormModal;
 import io.student.rcc.test.BaseWebTest;
-import io.student.rcc.test.support.AuthSteps;
+import io.student.rcc.test.support.ApiAuthStepsExtended;
+import io.student.rcc.test.support.TestUser;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -15,112 +16,131 @@ import java.io.File;
 @Tag("web")
 public class MuseumAndProfileWebTest extends BaseWebTest {
 
-  @Test
-  @DisplayName("Редактирование профиля для нового пользователя")
-  void shouldEditProfile() {
-    ProfilePage profilePage = AuthSteps.registerAndLoginEmptyUser();
+    @Test
+    @DisplayName("Редактирование профиля для нового пользователя")
+    void shouldEditProfile() {
+        // 1. Создаем пользователя через API
+        TestUser user = ApiAuthStepsExtended.registerUserViaApi();
 
-    profilePage.openProfileModal();
-    ProfileFormModal profileModal = profilePage.profileFormModal();
-    profileModal
-        .setFirstname("Иван")
-        .setSurname("Петров")
-        .submit();
+        // 2. Логинимся через UI
+        ProfilePage profilePage = ApiAuthStepsExtended.loginUserViaUi(user);
 
-    profilePage.openProfileModal();
-    profilePage.profileFormModal()
-        .shouldHaveFirstname("Иван")
-        .shouldHaveSurname("Петров");
-  }
+        profilePage.openProfileModal();
+        ProfileFormModal profileModal = profilePage.profileFormModal();
+        profileModal
+                .setFirstname("Иван")
+                .setSurname("Петров")
+                .submit();
 
-  @Test
-  @DisplayName("Создание нового музея")
-  void shouldCreateMuseum() {
-    MuseumPage museumPage = AuthSteps.registerAndLoginEmptyUser()
-        .header()
-        .goToMuseums();
+        profilePage.openProfileModal();
+        profilePage.profileFormModal()
+                .shouldHaveFirstname("Иван")
+                .shouldHaveSurname("Петров");
+    }
 
-    String title = "Museum " + System.currentTimeMillis();
+    @Test
+    @DisplayName("Создание нового музея")
+    void shouldCreateMuseum() {
+        // 1. Создаем пользователя через API
+        TestUser user = ApiAuthStepsExtended.registerUserViaApi();
 
-    museumPage.clickAddMuseum();
-    museumPage.museumFormModal()
-        .setTitle(title)
-        .selectFirstCountry()
-        .setCity("Москва")
-        .uploadPhoto(validImage())
-        .setDescription("Описание тестового музея для UI автотеста")
-        .submit();
+        // 2. Логинимся
+        ProfilePage profilePage = ApiAuthStepsExtended.loginUserViaUi(user);
+        
+        // 3. Переходим к музеям
+        MuseumPage museumPage = profilePage.header().goToMuseums();
 
-    museumPage.search().search(title);
-    museumPage.openMuseumByTitle(title).shouldShowMuseumTitle(title);
-  }
+        String title = "Museum " + System.currentTimeMillis();
 
-  @Test
-  @DisplayName("Редактирование музея")
-  void shouldEditMuseum() {
-    MuseumPage museumPage = AuthSteps.registerAndLoginEmptyUser()
-        .header()
-        .goToMuseums();
+        museumPage.clickAddMuseum();
+        museumPage.museumFormModal()
+                .setTitle(title)
+                .selectFirstCountry()
+                .setCity("Москва")
+                .uploadPhoto(validImage())
+                .setDescription("Описание тестового музея для UI автотеста")
+                .submit();
 
-    String title = "Museum " + System.currentTimeMillis();
-    String updatedTitle = title + " Updated";
+        museumPage.search().search(title);
+        museumPage.openMuseumByTitle(title).shouldShowMuseumTitle(title);
+    }
 
-    museumPage.clickAddMuseum();
-    museumPage.museumFormModal()
-        .setTitle(title)
-        .selectFirstCountry()
-        .setCity("Казань")
-        .uploadPhoto(validImage())
-        .setDescription("Описание музея для проверки редактирования")
-        .submit();
+    @Test
+    @DisplayName("Редактирование музея")
+    void shouldEditMuseum() {
+        // 1. Создаем пользователя через API
+        TestUser user = ApiAuthStepsExtended.registerUserViaApi();
 
-    museumPage.search().search(title);
-    museumPage.openMuseumByTitle(title)
-        .clickEditMuseum();
+        // 2. Логинимся
+        ProfilePage profilePage = ApiAuthStepsExtended.loginUserViaUi(user);
+        
+        // 3. Переходим к музеям
+        MuseumPage museumPage = profilePage.header().goToMuseums();
 
-    museumPage.museumFormModal()
-        .setTitle(updatedTitle)
-        .setCity("Казань")
-        .setDescription("Обновленное описание музея для UI автотеста")
-        .submit();
+        String title = "Museum " + System.currentTimeMillis();
+        String updatedTitle = title + " Updated";
 
-    museumPage.shouldShowMuseumTitle(updatedTitle);
-  }
+        museumPage.clickAddMuseum();
+        museumPage.museumFormModal()
+                .setTitle(title)
+                .selectFirstCountry()
+                .setCity("Казань")
+                .uploadPhoto(validImage())
+                .setDescription("Описание музея для проверки редактирования")
+                .submit();
 
-  @Test
-  @DisplayName("Проверки граничных значений формы музея")
-  void shouldValidateMuseumFormBoundaries() {
-    MuseumPage museumPage = AuthSteps.registerAndLoginEmptyUser()
-        .header()
-        .goToMuseums();
+        museumPage.search().search(title);
+        museumPage.openMuseumByTitle(title)
+                .clickEditMuseum();
 
-    museumPage.clickAddMuseum();
-    MuseumFormModal modal = museumPage.museumFormModal();
+        museumPage.museumFormModal()
+                .setTitle(updatedTitle)
+                .setCity("Казань")
+                .setDescription("Обновленное описание музея для UI автотеста")
+                .submit();
 
-    modal.setTitle("ab")
-        .setCity("ab")
-        .setDescription("123456789")
-        .uploadPhoto(validImage())
-        .selectFirstCountry()
-        .submit()
-        .shouldHaveError("Название не может быть короче 3 символов")
-        .shouldHaveError("Город не может быть короче 3 символов")
-        .shouldHaveError("Описание не может быть короче 10 символов");
+        museumPage.shouldShowMuseumTitle(updatedTitle);
+    }
 
-    modal.setTitle(repeat("a", 256))
-        .setCity(repeat("b", 256))
-        .setDescription(repeat("c", 2001))
-        .submit()
-        .shouldHaveError("Название не может быть длиннее 255 символов")
-        .shouldHaveError("Город не может быть длиннее 255 символов")
-        .shouldHaveError("Описание не может быть длиннее 2000 символов");
-  }
+    @Test
+    @DisplayName("Проверки граничных значений формы музея")
+    void shouldValidateMuseumFormBoundaries() {
+        // 1. Создаем пользователя через API
+        TestUser user = ApiAuthStepsExtended.registerUserViaApi();
 
-  private static File validImage() {
-    return new File(System.getProperty("user.dir"), "../rococo.png");
-  }
+        // 2. Логинимся
+        ProfilePage profilePage = ApiAuthStepsExtended.loginUserViaUi(user);
+        
+        // 3. Переходим к музеям
+        MuseumPage museumPage = profilePage.header().goToMuseums();
 
-  private static String repeat(String symbol, int count) {
-    return symbol.repeat(Math.max(0, count));
-  }
+        museumPage.clickAddMuseum();
+        MuseumFormModal modal = museumPage.museumFormModal();
+
+        modal.setTitle("ab")
+                .setCity("ab")
+                .setDescription("123456789")
+                .uploadPhoto(validImage())
+                .selectFirstCountry()
+                .submit()
+                .shouldHaveError("Название не может быть короче 3 символов")
+                .shouldHaveError("Город не может быть короче 3 символов")
+                .shouldHaveError("Описание не может быть короче 10 символов");
+
+        modal.setTitle(repeat("a", 256))
+                .setCity(repeat("b", 256))
+                .setDescription(repeat("c", 2001))
+                .submit()
+                .shouldHaveError("Название не может быть длиннее 255 символов")
+                .shouldHaveError("Город не может быть длиннее 255 символов")
+                .shouldHaveError("Описание не может быть длиннее 2000 символов");
+    }
+
+    private static File validImage() {
+        return new File(System.getProperty("user.dir"), "../rococo.png");
+    }
+
+    private static String repeat(String symbol, int count) {
+        return symbol.repeat(Math.max(0, count));
+    }
 }

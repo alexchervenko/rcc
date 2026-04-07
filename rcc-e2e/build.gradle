@@ -8,6 +8,8 @@ version = '1.0.0'
 def allureVersion = '2.32.0'
 def aspectJVersion = '1.9.22'
 def junitVersion = '6.0.2'
+def retrofitVersion = '2.9.0'
+def okhttpVersion = '4.12.0'
 
 configurations {
     agent {
@@ -26,6 +28,10 @@ dependencies {
     testImplementation platform("org.junit:junit-bom:$junitVersion")
     testImplementation "org.junit.jupiter:junit-jupiter"
     testImplementation "com.codeborne:selenide:7.3.1"
+    testImplementation "com.squareup.retrofit2:retrofit:$retrofitVersion"
+    testImplementation "com.squareup.retrofit2:converter-jackson:$retrofitVersion"
+    testImplementation "com.squareup.okhttp3:okhttp:$okhttpVersion"
+    testImplementation "com.squareup.okhttp3:logging-interceptor:$okhttpVersion"
     testCompileOnly "org.projectlombok:lombok:1.18.42"
     testAnnotationProcessor "org.projectlombok:lombok:1.18.42"
 }

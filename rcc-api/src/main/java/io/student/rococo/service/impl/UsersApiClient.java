@@ -20,54 +20,51 @@ import java.util.UUID;
 @Primary
 @RequiredArgsConstructor
 public class UsersApiClient implements UsersClient {
-    
+
     private final RestTemplate restTemplate;
-    
+
     @Value("${users.service.url}")
     private String usersServiceUrl;
-    
+
     @Override
     public UserJson getCurrentUser() {
         URI uri = URI.create(usersServiceUrl + "/api/users/current");
-        
+
         ResponseEntity<UserJson> response = restTemplate.exchange(
                 uri,
                 HttpMethod.GET,
                 new HttpEntity<>(createHeaders()),
-                UserJson.class
-        );
-        
+                UserJson.class);
+
         return response.getBody();
     }
-    
+
     @Override
     public UserJson updateUserProfile(UserJson user) {
         URI uri = URI.create(usersServiceUrl + "/api/users/profile");
-        
+
         ResponseEntity<UserJson> response = restTemplate.exchange(
                 uri,
                 HttpMethod.PUT,
                 new HttpEntity<>(user, createHeaders()),
-                UserJson.class
-        );
-        
+                UserJson.class);
+
         return response.getBody();
     }
-    
+
     @Override
     public UserJson getUserById(String userId) {
         URI uri = URI.create(usersServiceUrl + "/api/users/" + userId);
-        
+
         ResponseEntity<UserJson> response = restTemplate.exchange(
                 uri,
                 HttpMethod.GET,
                 new HttpEntity<>(createHeaders()),
-                UserJson.class
-        );
-        
+                UserJson.class);
+
         return response.getBody();
     }
-    
+
     private HttpHeaders createHeaders() {
         HttpHeaders headers = new HttpHeaders();
         // Здесь можно добавить заголовки авторизации

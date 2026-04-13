@@ -33,6 +33,7 @@ public class RococoApiConfiguration {
                 .requestMatchers(GET, "/api/artist/**").permitAll()
                 .requestMatchers(GET, "/api/museum/**").permitAll()
                 .requestMatchers(GET, "/api/painting/**").permitAll()
+                .requestMatchers(GET, "/internal/users/**").permitAll()
                 .anyRequest().authenticated()
         )
         .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()));

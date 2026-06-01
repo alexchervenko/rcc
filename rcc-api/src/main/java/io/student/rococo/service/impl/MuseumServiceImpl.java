@@ -6,9 +6,10 @@ import io.student.rococo.data.repository.MuseumRepository;
 import io.student.rococo.model.CountryJson;
 import io.student.rococo.service.api.CountryService;
 import io.student.rococo.exception.ResourceNotFoundException;
+import io.student.rococo.model.CountryJson;
 import io.student.rococo.model.MuseumJson;
+import io.student.rococo.service.api.CountryService;
 import io.student.rococo.service.api.MuseumService;
-import io.student.rococo.util.StringAsBytes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -29,24 +30,13 @@ public class MuseumServiceImpl implements MuseumService {
   }
 
   @Override
-  @Transactional(readOnly = true)
-  public Page<MuseumJson> all(String title, Pageable pageable) {
-    Page<MuseumEntity> museums = (title == null)
-        ? museumRepository.findAll(pageable)
-        : museumRepository.findAllByTitleContainsIgnoreCase(title, pageable);
-    return museums.map(MuseumJson::fromEntity);
+  public Page<MuseumJson> all(Pageable pageable) {
+    return museumRepository.findAll(pageable).map(MuseumJson::fromEntity);
   }
 
   @Override
-  @Transactional(readOnly = true)
-  public MuseumJson findById(String id) {
-    return MuseumJson.fromEntity(
-        museumRepository.findById(
-            UUID.fromString(id)
-        ).orElseThrow(
-            () -> new ResourceNotFoundException(String.format("Музей не найден по id: %s", id))
-        )
-    );
+  public MuseumJson find(UUID id) {
+    return MuseumJson.fromEntity(getRequiredMuseum(id));
   }
 
   @Override

@@ -1,7 +1,10 @@
 package io.student.rococo.service.impl;
 
+import io.student.rococo.config.ServiceLocator;
 import io.student.rococo.data.entity.MuseumEntity;
 import io.student.rococo.data.repository.MuseumRepository;
+import io.student.rococo.model.CountryJson;
+import io.student.rococo.service.api.CountryService;
 import io.student.rococo.exception.ResourceNotFoundException;
 import io.student.rococo.model.CountryJson;
 import io.student.rococo.model.MuseumJson;
@@ -18,12 +21,12 @@ import java.util.UUID;
 @Service
 public class MuseumServiceImpl implements MuseumService {
   private final MuseumRepository museumRepository;
-  private final CountryService countryService;
+  private final ServiceLocator serviceLocator;
 
   @Autowired
-  public MuseumServiceImpl(MuseumRepository museumRepository, CountryService countryService) {
+  public MuseumServiceImpl(MuseumRepository museumRepository, ServiceLocator serviceLocator) {
     this.museumRepository = museumRepository;
-    this.countryService = countryService;
+    this.serviceLocator = serviceLocator;
   }
 
   @Override
@@ -39,8 +42,16 @@ public class MuseumServiceImpl implements MuseumService {
   @Override
   @Transactional
   public MuseumJson update(MuseumJson museum) {
-    MuseumEntity museumEntity = museum.toEntity();
-    // Устанавливаем countryExternalId как строку UUID если передан id
+    MuseumEntity museumEntity = getRequiredMuseum(museum.id());
+    museumEntity.setTitle(museum.title());
+    museumEntity.setCity(museum.geo().city());
+    museumEntity.setDescription(museum.description());
+    museumEntity.setPhoto(
+        new StringAsBytes(
+            museum.photo()
+        ).bytes()
+    );
+    // Устанавливаем countryExternalId как строку UUID
     if (museum.geo().country() != null && museum.geo().country().id() != null) {
       museumEntity.setCountryExternalId(museum.geo().country().id().toString());
     }
@@ -53,24 +64,11 @@ public class MuseumServiceImpl implements MuseumService {
   @Transactional
   public MuseumJson create(MuseumJson museum) {
     MuseumEntity museumEntity = museum.toEntity();
-
-    // Если клиент передал только имя страны, резолвим ее и заполняем countryExternalId
-    if (museum.geo().country() != null) {
-      if (museum.geo().country().id() != null) {
-        museumEntity.setCountryExternalId(museum.geo().country().id().toString());
-      } else if (museum.geo().country().name() != null) {
-        CountryJson found = countryService.findCountryByName(museum.geo().country().name());
-        if (found == null || found.id() == null) {
-          throw new ResourceNotFoundException("Страна не найдена: " + museum.geo().country().name());
-        }
-        museumEntity.setCountryExternalId(found.id().toString());
-      } else {
-        throw new ResourceNotFoundException("Не указаны данные страны (id или name)");
-      }
-    } else {
-      throw new ResourceNotFoundException("Страна не указана");
-    }
-
+    
+    // Проверяем существование страны через RestCountryClient
+    validateCountryExists(museum.geo().country());
+    
+    // countryExternalId уже установлен в toEntity()
     return MuseumJson.fromEntity(
         museumRepository.save(
             museumEntity
@@ -82,5 +80,28 @@ public class MuseumServiceImpl implements MuseumService {
     return museumRepository.findById(id).orElseThrow(
         () -> new ResourceNotFoundException(String.format("Музей не найден по id: %s", id))
     );
+  }
+
+  private void validateCountryExists(CountryJson country) {
+    if (country == null) {
+      throw new ResourceNotFoundException("Страна не указана");
+    }
+    
+    CountryService countryService = serviceLocator.getCountryService();
+    
+    try {
+      if (country.id() != null) {
+        // Проверяем по ID через RestCountryClient
+        countryService.findCountryById(country.id().toString());
+      } else if (country.name() != null) {
+        // Проверяем по имени через RestCountryClient
+        countryService.findCountryByName(country.name());
+      } else {
+        throw new ResourceNotFoundException("Не указаны данные страны (id или name)");
+      }
+    } catch (Exception e) {
+      throw new ResourceNotFoundException("Страна не найдена: " + 
+          (country.id() != null ? country.id().toString() : country.name()));
+    }
   }
 }

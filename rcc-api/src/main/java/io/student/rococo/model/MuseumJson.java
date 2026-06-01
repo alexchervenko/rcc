@@ -19,8 +19,8 @@ public record MuseumJson(UUID id, String title, String description, String photo
         new GeoJson(
             entity.getCity(),
             new CountryJson(
-                entity.getCountry().getId(),
-                entity.getCountry().getName()
+                entity.getCountryExternalId() != null ? UUID.fromString(entity.getCountryExternalId()) : null,
+                null // Имя страны будет получено через RestCountryClient
             )
         )
     );
@@ -36,6 +36,10 @@ public record MuseumJson(UUID id, String title, String description, String photo
         ).bytes()
     );
     entity.setCity(geo.city());
+    // Устанавливаем countryExternalId из geo().country().id() как строку
+    if (geo().country() != null && geo().country().id() != null) {
+      entity.setCountryExternalId(geo().country().id().toString());
+    }
     return entity;
   }
 }

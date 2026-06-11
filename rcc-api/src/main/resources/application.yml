@@ -26,6 +26,8 @@ spring:
     baseline-version: 0
     schemas: rococo-api
     locations: classpath:db/migration/rococo-api
+    validate-migration-naming: false
+    validate-on-migrate: false
   jpa:
     hibernate:
       ddl-auto: none
@@ -48,3 +50,11 @@ logging:
 
 rococo-front:
   base-uri: 'http://localhost:3000'
+
+users:
+  service:
+    url: 'http://localhost:9000'
+
+geo:
+  service:
+    url: 'http://localhost:8081'

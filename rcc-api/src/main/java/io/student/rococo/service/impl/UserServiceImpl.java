@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -59,6 +60,15 @@ public class UserServiceImpl implements UserService {
     return UserJson.fromEntity(
         getRequiredUser(username)
     );
+  }
+
+  @Override
+  @Transactional(readOnly = true)
+  public List<UserJson> getAllUsers() {
+    return userRepository.findAll()
+        .stream()
+        .map(UserJson::fromEntity)
+        .toList();
   }
 
   @Transactional(readOnly = true)
